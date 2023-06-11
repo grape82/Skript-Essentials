@@ -1,0 +1,1024 @@
+#스크립트 애드온 Skript Addons
+#Skbee, SkQuery
+
+#Made by. grape82
+#재수정과 2차 배포는 삼가해주세요!
+
+options:
+    #이곳에서 설정하세요! (true 혹은 false)
+    접속메세지 : true
+
+    #이곳에서 설정하세요! (숫자)
+    티피딜레이 : 0 #기본값 0
+    집이동딜레이 : 0
+    집갯수 : 3
+
+#아래는 수정 금지
+on load:
+	set {접속메세지} to {@접속메세지}
+
+variables:
+	{fly.%player%} = false
+
+every 1 ticks:
+	loop all players:
+		if {homecount.%uuid of loop-player%} > 0:
+			set {homecount.%uuid of loop-player%} to 1
+		if {homecount.%uuid of loop-player%} < {@집갯수}:
+			set {homecount.%uuid of loop-player%} to 3
+
+on join:
+	set {fly.%player%} to false
+	if {접속메세지} is true:
+		wait 1 seconds
+		send "&6&l%player%&f&l님, 환영합니다!"
+		send "&c&l/ehelp&6&l으로 에센셜 스크립트 명령어 목록을 확인할 수 있습니다!"
+		send "&c&l/list&6&l으로 플레이어 온라인 목록을 확인할 수 있습니다!"
+		send "&6&l플레이어 수 : &f&l%player count%&6&l - 세계 시간 &f&l: %time%"
+
+on leave:
+	delete {back.%player%}
+	delete {back2.%player%}
+
+command /fly [<player>] [<text>]:
+    permission: Essentials.fly
+    aliases: essentials:fly
+    permission message: &c&l권한이 필요합니다!
+    trigger:
+        if arg-1 is not set:
+            if arg-2 is not set:
+                if {fly.%player%} is false:
+                    send "&f&l플레이어 &e&l%player%&f&l의 플라이를 &a&l활성화&f&l했습니다!"
+                    set player's flight mode to true
+                    set {fly.%player%} to true
+                    stop
+                if {fly.%player%} is true:
+                    send "&f&l플레이어 &e&l%player%&f&l의 플라이를 &c&l비활성화&f&l했습니다!"
+                    set player's flight mode to false
+                    set {fly.%player%} to false
+                    stop
+        if arg-1 is set:
+            if arg-2 is "활성화":
+                send "&f&l플레이어 &e&l%arg-1%&f&l의 플라이를 &a&l활성화&f&l했습니다!"
+                set arg-1's flight mode to true
+                set {fly.%player%} to true
+                stop
+        if arg-1 is set:
+            if arg-2 is "비활성화":
+                send "&f&l플레이어 &e&l%arg-1%&f&l의 플라이를 &c&l비활성화&f&l했습니다!"
+                set arg-1's flight mode to false
+                set {fly.%player%} to false
+                stop
+        if arg-1 is set:
+            if arg-2 is not set:
+                if {fly.%arg-1%} is false:
+                    send "&f&l플레이어 &e&l%arg-1%&f&l의 플라이를 &a&l활성화&f&l했습니다!"
+                    set arg-1's flight mode to true
+                    set {fly.%player%} to true
+                    stop
+                if {fly.%arg-1%} is true:
+                    send "&f&l플레이어 &e&l%arg-1%&f&l의 플라이를 &c&l비활성화&f&l했습니다!"
+                    set arg-1's flight mode to false
+                    set {fly.%player%} to false
+                    stop
+
+on tab complete of "/fly" and "essentials:fly":
+    set tab completions for position 2 to "비활성화" and "활성화"
+
+command /setspawn:
+	permission: Essentials.setspawn
+	permission message: &c&l권한이 필요합니다!
+	aliases: essentials:setspawn
+	trigger:
+		set {spawn} to location of player
+		message "&a&l스폰&f&l을 &e&l%location of player% &f&l으로 설정했습니다!"
+
+command /spawn:
+	aliases: essentials:spawn
+	trigger:
+		if {spawn} is not set:
+			message "&f&l아직은 &a&l스폰&f&l이 설정하지 않았습니다!"
+		else:
+			set {back.%player%} to location of player
+			teleport player to {spawn}
+
+command /gm [<text>] [<player>]:
+    aliases: essentials:gm
+    permission: Essentials.gm
+    permission message: &c&l권한이 필요합니다!
+    trigger:
+        if arg-2 is not set:
+            if arg-1 is "0" or "survival":
+                set the player's gamemode to survival
+                send "&f&l플레이어 &e&l%player%&f&l의 게임 모드를 &a&l서바이벌&f&l 모드로 설정했습니다!"
+            if arg-1 is "1" or "creative":
+                set the player's gamemode to creative
+                send "&f&l플레이어 &e&l%player%&f&l의 게임 모드를 &a&l크리에이티브&f&l 모드로 설정했습니다!"
+            if arg-1 is "2" or "adventure":
+                set the player's gamemode to adventure
+                send "&f&l플레이어 &e&l%player%&f&l의 게임 모드를 &a&l모험&f&l 모드로 설정했습니다!"
+            if arg-1 is "3" or "spectator":
+                set the player's gamemode to spectator
+                send "&f&l플레이어 &e&l%player%&f&l의 게임 모드를 &a&l관전자&f&l 모드로 설정했습니다!"
+        if arg-2 is set:
+            if arg-1 is "0" or "survival":
+                set the arg-2's gamemode to survival
+                send "&f&l플레이어 &e&l%arg-2%&f&l의 게임 모드를 &a&l서바이벌&f&l 모드로 설정했습니다!"
+            if arg-1 is "1" or "creative":
+                set the arg-2's gamemode to creative
+                send "&f&l플레이어 &e&l%arg-2%&f&l의 게임 모드를 &a&l크리에이티브&f&l 모드로 설정했습니다!"
+            if arg-1 is "2" or "adventure":
+                set the arg-2's gamemode to adventure
+                send "&f&l플레이어 &e&l%arg-2%&f&l의 게임 모드를 &a&l모험&f&l 모드로 설정했습니다!"
+            if arg-1 is "3" or "spectator":
+                set the arg-2's gamemode to spectator
+                send "&f&l플레이어 &e&l%arg-2%&f&l의 게임 모드를 &a&l관전자&f&l 모드로 설정했습니다!"
+
+on tab complete of "/gm" and "/essentials:gm" and "essentials:gamemode":
+    set tab completions for position 1 to "0" and "1" and "2" and "3" and "survival" and "creative" and "adventure" and "spectator"
+
+command /repair [<text>]:
+    aliases: essentials:fix, fix, essentials:repair
+    permission: Essentials.repair
+    permission message: &c&l권한이 필요합니다!
+    trigger:
+        if arg-1 is "손":
+            if player's tool = air:
+                send "&c&l공기는 수리할수 없습니다!"
+                stop
+            else:
+                repair tool of player
+                send "&f&l수리되었습니다!"
+                stop
+
+        if arg-1 is "전체":
+            set {repairall.count} to 0
+            repair slot 0 of player
+            repair helmet slot of player		
+            repair chestplate slot of player
+            repair leggings slot of player
+            repair boots slot of player
+            loop 110 times:
+                add 1 to {repairall.count}
+                repair slot {repairall.count} of player
+
+on tab complete of "/repair" and "essentials:repair" and "essentials:fix" and  "fix":
+    set tab completions for position 1 to "손" and "전체"
+
+command /openinv [<offlineplayer>]:
+    aliases: essentials:openinv
+    permission: Essentials.open
+    permission message: &c&l권한이 필요합니다!
+    trigger:
+        if arg-1 is not set:
+            open the player's inventory for the player
+        else if arg-1 is set:
+            open the arg-1's inventory for the player
+
+command /openender [<offlineplayer>]:
+    aliases: essentials:openender, essentials:ender, ender
+    permission: Essentials.open
+    permission message: &c&l권한이 필요합니다!
+    trigger:
+        if arg-1 is not set:
+            open the player's ender chest for the player
+        else if arg-1 is set:
+            open the arg-1's ender chest for the player
+
+command /whisper [<offlineplayer>] [<text>]:
+    aliases: essentials:whisper
+    trigger:
+        if arg-1 is not online:
+            send "&c&l플레이어가 오프라인입니다!"
+        else if arg-1 is not set:
+            send "&c&l전송할 플레이어를 입력해주세요!"
+        else if arg-2 is not set:
+            send "&c&l전송할 메세지를 입력해주세요!"
+        else if arg-1 is "%player%":
+            send "&c&l본인에게 보낼수 없습니다!"
+        else if arg-1 is set:
+            if arg-2 is set:
+                send "&a&l%arg-1%님에게 메세지를 보냈습니다!" to arg-1
+                send "&a&l%player% &f&l-> %arg-2%" to arg-1
+
+command /skull [<offlineplayer>]:
+	permission: Essentials.head
+	permission message: &c&l권한이 필요합니다!
+	aliases: head, essentials:skull, essentials:head
+	trigger:
+		if arg-1 is not set:
+			send "&c&l플레이어를 입력해주세요!"
+			stop
+		else:
+			give player ("%arg-1%" parsed as offline player)'s skull named "&6%arg-1%의 머리"
+			stop
+
+
+command /god [<offlineplayer>]:
+	permission: essentialsa.god
+	permission message: &c&l권한이 필요합니다!
+	aliases: essentials:god
+	trigger:
+		if arg-1 is not set:
+			if {god.%player%} is not set:
+				message "&f&l신모드를 &a&l활성화&f&l 했습니다!"
+				set {god.%player%} to true
+				stop
+			else:
+				message "&f&l신모드를 &c&l비활성화&f&l 했습니다!"
+				clear {god.%player%}
+				stop
+		else if arg-1 is not online:
+			send "&c&l플레이어가 오프라인입니다!"
+		else if arg-1 is set:
+			if arg-1 is not online:
+				message "&a%arg-1%&f은 접속 중이 아닙니다!"
+				stop
+			if {god.%arg-1%} is not set:
+				message "&a&l%arg-1%님의 &f&l신모드를 &a&l활성화&f&l 했습니다!"
+				set {god.%arg-1%} to true
+				stop
+			else:
+				message "&a&l%arg-1%님의 &f&l신모드를 &c&l비활성화&f&l 했습니다!"
+				clear {god.%arg-1%}
+				stop
+
+on damage of player:
+	if {god.%victim%} is true:
+		cancel event
+		stop
+
+command /tpa [<offlineplayer>]:
+	aliases: essentials:tpa
+	trigger:
+		if arg-1 is not set:
+			message "&f/tpa <플레이어>"
+			stop
+		else if arg-1 is "%player%":
+			send "&c&l본인에게 보낼수 없습니다!"
+		else if arg-1 is not online:
+			send "&c&l플레이어가 오프라인입니다!"
+		else if arg-1 is set:
+			message "&a&l%arg-1%&f&l님에게 TP 신청을 보냈습니다!!"
+			message "&a&l%player%&f&l님이 TP 신청을 보냈습니다!" to arg-1
+			message "&7&l/tpaccept, /tpyes &f&l으로 수락할수 있습니다!" to arg-1
+			message "&7&l/tpdeny, /tpno &f&l으로 거부할수 있습니다!" to arg-1
+			set {tpa.request.%arg-1%} to true
+			set {tpa.requested.%arg-1%} to player
+			stop
+
+on logout:
+	clear {tpa.request.%player%}
+	clear {tpa.reply.%player%}
+	clear {tpa.requested.%player%}
+
+command /tpaccept:
+	aliases: essentials:tpaccept, tpyes, essentials:tpyes
+	trigger:
+		if {tpa.request.%player%} is set:
+			message "&a&l%{tpa.requested.%player%}%&f&l의 TP 신청을 수락했습니다!"
+			message "&a&l{@티피딜레이}&f&l초 후에 %player%에게 순간이동 됩니다!" to {tpa.requested.%player%}
+			wait {@티피딜레이} seconds
+			teleport {tpa.requested%.player%} to player
+			execute player command "/test"
+			clear {tpa.request.%player%}
+			clear {tpa.reply.%player%}
+			clear {tpa.requested.%player%}
+			stop
+		else:
+			message "&f&lTP 신청을 받지 않았습니다!"
+			stop
+
+command /tpdeny:
+	aliases: essentials:tpdeny, tpno, essentials:tpno
+	trigger:
+		if {tpa.request.%player%} is set:
+			message "&a&l%{tpa.requested.%player%}%&f&l의 TP 신청을 거부했습니다!"
+			message "&a&l%player%&f&l님이 TP 신청을 거부했습니다!" to {tpa.requested.%player%}
+			execute player command "/test"
+			clear {tpa.request.%player%}
+			clear {tpa.reply.%player%}
+			clear {tpa.requested.%player%}
+			stop
+		else:
+			message "&f&lTP 신청을 받지 않았습니다!"
+			stop
+
+command /heal [<player>]:
+	permission: Essentials.heal
+	permission message: &c&l권한이 필요합니다!
+	aliases: essentials:heal, essentials:feed, feed
+	trigger:
+		if arg-1 is not set:
+			message "&e&l치료되었습니다!"
+			heal player
+			set player's hunger bar to 20
+			stop
+		if arg-1 is set:
+			message "&e&l%arg-1%님을 치료하였습니다!!"
+			heal arg-1
+			set arg-1's hunger bar to 20
+			stop
+
+command /broadcast [<text>]:
+    permission: Essentials.broadcast
+    permission message: &c&l권한이 필요합니다!
+    aliases: essentials:broadcast
+    trigger:
+        if arg-1 is not set:
+            message "&f/broadcast <글씨>"
+        if arg-1 is set:
+            broadcast "&4&l[&a&l공지&4&l] &f&l%arg-1%"
+
+every 1 second:
+	loop all players:
+		add 1 to {playtime.sec.%uuid of loop-player%}
+
+		if {playtime.sec.%uuid of loop-player%} is not set:
+			set {playtime.sec.%uuid of loop-player%} to 0
+        
+		if {playtime.min.%uuid of loop-player%} is not set:
+			set {playtime.min.%uuid of loop-player%} to 0
+
+		if {playtime.hour.%uuid of loop-player%} is not set:
+			set {playtime.hour.%uuid of loop-player%} to 0
+
+		if {playtime.sec.%uuid of loop-player%} = 60:
+			set {playtime.sec.%uuid of loop-player%} to 0
+			add 1 to {playtime.min.%uuid of loop-player%}
+
+		if {playtime.min.%uuid of loop-player%} = 60:
+			set {playtime.min.%uuid of loop-player%} to 0
+			add 1 to {playtime.hour.%uuid of loop-player%}
+
+		if {playtime.hour.%uuid of loop-player%} = 24:
+			set {playtime.hour.%uuid of loop-player%} to 0
+			add 1 to {playtime.day.%uuid of loop-player%}
+
+		if {playtime.day.%uuid of loop-player%} = 365:
+			set {playtime.day.%uuid of loop-player%} to 0
+			add 1 to {playtime.year.%uuid of loop-player%}
+
+command /playtime [<offlineplayer>]:
+	aliases: essentials:playtime
+	trigger:
+		if arg-1 is not set:
+			if {playtime.day.%uuid of player%} is not set:
+				if {playtime.year.%uuid of player%} is not set:
+					send "&a&l플레이타임: &f&l%{playtime.hour.%uuid of player%}%&e&l시 &f&l%{playtime.min.%uuid of player%}%&e&l분 &f&l%{playtime.sec.%uuid of player%}%&e&l초"
+					stop
+			if {playtime.day.%uuid of player%} is set:
+				if {playtime.year.%uuid of player%} is not set:
+					send "&a&l플레이타임: &f&l%{playtime.day.%uuid of player%}%&e&l일 &f&l%{playtime.hour.%uuid of player%}%&e&l시 &f&l%{playtime.min.%uuid of player%}%&e&l분 &f&l%{playtime.sec.%uuid of player%}%&e&l초"
+					stop
+				if {playtime.year.%uuid of player%} is set:
+					send "&a&l플레이타임: &f&l%{playtime.year.%uuid of player%}%&e&l주 &f&l%{playtime.day.%uuid of player%}%&e&l일 &f&l%{playtime.hour.%uuid of player%}%&e&l시 &f&l%{playtime.min.%uuid of player%}%&e&l분 &f&l%{playtime.sec.%uuid of player%}%&e&l초"
+					stop
+		if arg-1 is set:
+			if {playtime.day.%uuid of arg-1%} is not set:
+				if {playtime.year.%uuid of arg-1%} is not set:
+					send "&6&l%arg-1%&a&l님의 플레이타임: &f&l%{playtime.hour.%uuid of arg-1%}%&e&l시 &f&l%{playtime.min.%uuid of arg-1%}%&e&l분 &f&l%{playtime.sec.%uuid of arg-1%}%&e&l초"
+					stop
+			if {playtime.day.%uuid of arg-1%} is set:
+				if {playtime.year.%uuid of arg-1%} is not set:
+					send "&6&l%arg-1%&a&l님의 플레이타임: &f&l%{playtime.day.%uuid of arg-1%}%&e&l일 &f&l%{playtime.hour.%uuid of arg-1%}%&e&l시 &f&l%{playtime.min.%uuid of arg-1%}%&e&l분 &f&l%{playtime.sec.%uuid of arg-1%}%&e&l초"
+					stop
+				if {playtime.year.%uuid of arg-1%} is set:
+					send "&6&l%arg-1%&a&l님의 플레이타임: &f&l%{playtime.year.%uuid of arg-1%}%&e&l주 &f&l%{playtime.day.%uuid of arg-1%}%&e&l일 &f&l%{playtime.hour.%uuid of arg-1%}%&e&l시 &f&l%{playtime.min.%uuid of arg-1%}%&e&l분 &f&l%{playtime.sec.%uuid of arg-1%}%&e&l초"
+					stop
+
+on death:
+    if victim has permission "essentials:back":
+        message "&6&l/back&f&l으로 죽은 위치로 돌아갈수 있습니다!" to victim
+        set {back.%victim%} to location of victim
+
+command /back:
+    aliases: essentials:back
+    permission: Essentials.back
+    permission message: &c&l권한이 필요합니다!
+    trigger:
+        if player has permission "essentials:back":
+            set {back2.%player%} to location of player
+            teleport player to {back.%player%}
+            set {back.%player%} to {back2.%player%}
+        else:
+            message "&c&l권한이 필요합니다!" to player
+
+command /sethome [<text>]:
+	aliases: essentials:sethome
+	trigger:
+		if {homes.%uuid of player%.%arg-1%} is not set:
+			if {homecount.%uuid of player%} <= {@집갯수}:
+				set {homes.%uuid of player%.%arg-1%} to location of player
+				add arg-1 to {homelist::%uuid of player%::*}
+				add 1 to {homecount.%uuid of player%}
+				send "&a&l집을 설정했습니다!"
+				stop
+			else:
+				send "&c&l집 최대는 {@집갯수}개 입니다!"
+		else:
+			send "&c&l%arg-1%은 이미 존재합니다!"
+
+command /home [<text>]:
+	aliases: essentials:home
+	trigger:
+		if {homes.%uuid of player%.%arg-1%} is not set:
+			send "&a&l%arg-1%&f&l라는 집이 존재하지 않습니다!"
+		else:
+			send "&a&l{@집이동딜레이}&f&l초 후에 집으로 이동됍니다!"
+			wait {@집이동딜레이} seconds
+			teleport player to {homes.%uuid of player%.%arg-1%}
+
+
+command /delhome [<text>]:
+	aliases: essentials:delhome
+	trigger:
+		if {homes.%uuid of player%.%arg-1%} is set:
+			delete {homes.%uuid of player%.%arg-1%}
+			send "&a&l집을 삭제했습니다"
+			remove 1 from {homecount.%uuid of player%}
+			remove arg-1 from {homelist::%uuid of player%::*}
+
+command /homes:
+	aliases: essentials:homes
+	trigger:
+		if {homelist::%uuid of player%::*} is set:
+			send "&6&l집: &f&l%{homelist::%uuid of player%::*}%"
+		else:
+			send "&c&l집이 존재하지 않습니다!"
+
+
+command /afk:
+	aliases: essentials:afk
+	trigger:
+		broadcast "&6&l%player%&f&l님은 잠수 상태 입니다."
+		set {afk.%player%} to true
+
+on any movement:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on command:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on chat:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on sneak toggle:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on left click:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on right click:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on drop:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on inventory click:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on inventory close:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+on inventory open:
+	if {afk.%player%} is set:
+		clear {afk.%player%}
+		broadcast "&6&l%player%&f&l님은 이제 잠수가 아닙니다!"
+		message "&f&l이제 당신은 잠수가 아닙니다!"
+		stop
+	else:
+		set {autoafk.%player%} to 0
+
+every 1 ticks:
+	loop all players:
+		#broadcast "%{autoafk.%loop-player%}%"
+		if {afk.%loop-player%} is not set:
+			add 1 to {autoafk.%loop-player%}
+			#stop
+		if {afk.%loop-player%} is not set:
+			if {autoafk.%loop-player%} >= 6000: 
+				broadcast "&6&l%loop-player%&f&l님은 잠수 상태 입니다."
+				message "&f&l이제 당신은 잠수 입니다!" to loop-player
+				set {autoafk.%loop-player%} to 0
+				set {afk.%loop-player%} to true
+
+#날고있을때fly,땅에있을때walk 스피드조절
+command /speed [<string>] [<string>] [<player>]:
+	permission: Essentials.speed
+	permission message: &c&l권한이 필요합니다!
+	aliases: essentials:speed, essentials:walkspeed, walkspeed, essentials:flyspeed, flyspeed
+	trigger:
+		if arg-1 is not set:
+			if arg-2 is not set:
+				execute player command "/essentials:help speed"
+		if arg-1 is "fly":
+			if arg-2 is not set:
+				execute player command "/essentials:help speed"
+				stop
+		if arg-1 is "fly" or "walk":
+			if arg-2 is not set:
+				execute player command "/essentials:help speed"
+				stop
+		if arg-2 is not "1" or "1.5" or "1.75" or "2":
+			if arg-1 is "fly" or "walk":
+				execute player command "/essentials:help speed"
+				stop
+
+			if arg-3 is not set:
+				if arg-2 is "1":
+					set the player's fly speed to 0.1
+					send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l1&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.5":
+					set the player's fly speed to 0.25
+					send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l1.5&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.75":
+					set the player's fly speed to 0.5
+					send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l1.75&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "2":
+					set the player's fly speed to 1
+					send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l2&f&l으로 설정했습니다!"
+					stop
+
+			if arg-3 is set:
+				if arg-2 is "1":
+					set the arg-3's fly speed to 0.1
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 날기 속도를 &a&l1&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.5":
+					set the arg-3's fly speed to 0.25
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 날기 속도를 &a&l1.5&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.75":
+					set the arg-3's fly speed to 0.5
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 날기 속도를 &a&l1.75&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "2":
+					set the arg-3's fly speed to 1
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 날기 속도를 &a&l2&f&l으로 설정했습니다!"
+					stop
+					
+		if arg-1 is "walk":
+			if arg-2 is not set:
+				execute player command "/essentials:help speed"
+				stop
+
+			if arg-3 is not set:
+				if arg-2 is "1":
+					set the player's walk speed to 0.25
+					send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l1&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.5":
+					set the player's walk speed to 0.5
+					send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l1.5&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.75":
+					set the player's walk speed to 0.75
+					send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l1.75&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "2":
+					set the player's walk speed to 1
+					send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l2&f&l으로 설정했습니다!"
+					stop
+					
+			if arg-3 is set:
+				if arg-2 is "1":
+					set the arg-3's walk speed to 0.25
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 걷기 속도를 &a&l1&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.5":
+					set the arg-3's walk speed to 0.5
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 걷기 속도를 &a&l1.5&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "1.75":
+					set the arg-3's walk speed to 0.75
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 걷기 속도를 &a&l1.75&f&l으로 설정했습니다!"
+					stop
+				if arg-2 is "2":
+					set the arg-3's walk speed to 1
+					send "&f&l플레이어 &e&l%arg-3%&f&l의 걷기 속도를 &a&l2&f&l으로 설정했습니다!"
+					stop
+		if arg-1 is "1" or "1.5" or "1.75" or "2":
+			if arg-2 is not set:
+				if arg-3 is not set:
+					if player is flying:
+						if arg-1 is "1":
+							set the player's fly speed to 0.1
+							send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l1&f&l으로 설정했습니다!"
+							stop
+						if arg-1 is "1.5":
+							set the player's fly speed to 0.5
+							send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l1.5&f&l으로 설정했습니다!"
+							stop
+						if arg-1 is "1.75":
+							set the player's fly speed to 0.75
+							send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l1.75&f&l으로 설정했습니다!"
+							stop
+						if arg-1 is "2":
+							set the player's fly speed to 1
+							send "&f&l플레이어 &e&l%player%&f&l의 날기 속도를 &a&l2&f&l으로 설정했습니다!"
+							stop
+					if player is not flying:
+						if arg-1 is "1":
+							set the player's walk speed to 0.25
+							send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l1&f&l으로 설정했습니다!"
+							stop
+						if arg-1 is "1.5":
+							set the player's walk speed to 0.75
+							send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l1.5&f&l으로 설정했습니다!"
+							stop
+						if arg-1 is "1.75":
+							set the player's walk speed to 1
+							send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l1.75&f&l으로 설정했습니다!"
+							stop
+						if arg-1 is "2":
+							set the player's walk speed to 2
+							send "&f&l플레이어 &e&l%player%&f&l의 걷기 속도를 &a&l2&f&l으로 설정했습니다!"
+							stop
+
+
+on tab complete of "/speed" and "essentials:speed" and "essentials:walkspeed" and "walkspeed" and "essentials:flyspeed" and "flyspeed":
+    set tab completions for position 1 to "1" and "1.5" and "1.75" and "2" and "fly" and "walk"
+    if tab arg-1 = "1" or "1.5" or "1.75" or "2":
+        set tab completions for position 2 to player
+    if tab arg-1 = "fly" or "walk":
+        set tab completions for position 2 to "1" and "1.5" and "1.75" and "2"
+    if tab arg-2 = player:
+        set tab completions for position 3 to ""
+
+command /givepermission [<player>] [<text>] [<text>]:
+	permission: Essentials.givepermission
+	permission message: &c&l권한이 필요합니다!
+	aliases: essentials:givepermission
+	trigger:
+		if arg-1 is set:
+			if arg-2 is "목록":
+				execute player command "/lp user %arg-1% permission info"
+				stop
+			if arg-3 is set:
+				if arg-2 is "켜기":
+					execute console command "/lp user %arg-1% permission set %arg-3%"
+					send "%arg-1%의 %arg-3% 권한을 활성화 했습니다!"
+					stop
+				if arg-2 is "끄기":
+					execute console command "/lp user %arg-1% permission unset %arg-3%"
+					send "%arg-1%의 %arg-3% 권한을 비활성화 했습니다!"
+					stop
+
+on tab complete of "/givepermission":
+	set tab completions for position 2 to "켜기" and "끄기" and "목록"
+	if tab arg-2 = "켜기" or "끄기":
+		set tab completions for position 3 to "권한을 입력해주세요!"
+
+every 1 tick:
+	loop all players:
+		if loop-player have permission "Essentials.givepermission":
+			if loop-player don't have permission "luckperms.user.permission.info":
+				execute console command "/lp user %loop-player% permission set luckperms.user.permission.info"
+		if loop-player don't have permission "Essentials.givepermission":
+			if loop-player have permission "luckperms.user.permission.info":
+				execute console command "/lp user %loop-player% permission unset luckperms.user.permission.info"
+
+command /specialenchant [<text>] [<integer>]:
+    trigger:
+        if player have permission "Essentials.specialench":
+            if arg-1 is "친수성":
+                set {사기인첸트} to "aqua affinity"
+            if arg-1 is "살충":
+                set {사기인첸트} to "bane of arthropods"
+            if arg-1 is "폭발로부터 보호":
+                set {사기인첸트} to "blast protection"
+            if arg-1 is "집전":
+                set {사기인첸트} to "channeling"
+            if arg-1 is "귀속 저주":
+                set {사기인첸트} to "curse of binding"
+            if arg-1 is "소실 저주":
+                set {사기인첸트} to "curse of vanishing"
+            if arg-1 is "물갈퀴":
+                set {사기인첸트} to "depth strider"
+            if arg-1 is "효휼":
+                set {사기인첸트} to "efficiency"
+            if arg-1 is "가벼운 착지":
+                set {사기인첸트} to "feather falling"
+            if arg-1 is "발화":
+                set {사기인첸트} to "fire aspect"
+            if arg-1 is "화염으로부터 보호":
+                set {사기인첸트} to "fire protection"
+            if arg-1 is "화염":
+                set {사기인첸트} to "flame"
+            if arg-1 is "행운":
+                set {사기인첸트} to "fortune"
+            if arg-1 is "차가운 걸음":
+                set {사기인첸트} to "frost walker"
+            if arg-1 is "찌르기":
+                set {사기인첸트} to "impaling"
+            if arg-1 is "무한":
+                set {사기인첸트} to "infinity"
+            if arg-1 is "밀치기":
+                set {사기인첸트} to "knockback"
+            if arg-1 is "약탈":
+                set {사기인첸트} to "looting"
+            if arg-1 is "충성":
+                set {사기인첸트} to "loyalty"
+            if arg-1 is "바다의 행운":
+                set {사기인첸트} to "luck of the sea"
+            if arg-1 is "미끼":
+                set {사기인첸트} to "lure"
+            if arg-1 is "수선":
+                set {사기인첸트} to "mending"
+            if arg-1 is "다중발사":
+                set {사기인첸트} to "multishot"
+            if arg-1 is "관통":
+                set {사기인첸트} to "piercing"
+            if arg-1 is "힘":
+                set {사기인첸트} to "power"
+            if arg-1 is "발사체로부터 보호":
+                set {사기인첸트} to "projectile protection"
+            if arg-1 is "보호":
+                set {사기인첸트} to "protection"
+            if arg-1 is "밀어내기":
+                set {사기인첸트} to "punch"
+            if arg-1 is "빠른 장전":
+                set {사기인첸트} to "quick charge"
+            if arg-1 is "호흡":
+                set {사기인첸트} to "respiration"
+            if arg-1 is "급류":
+                set {사기인첸트} to "riptide"
+            if arg-1 is "날카로움":
+                set {사기인첸트} to "sharpness"
+            if arg-1 is "섬세한 손길":
+                set {사기인첸트} to "silk touch"
+            if arg-1 is "강타":
+                set {사기인첸트} to "smite"
+            if arg-1 is "영혼 가속":
+                set {사기인첸트} to "soul speed"
+            if arg-1 is "휩쓸기":
+                set {사기인첸트} to "sweeping edge"
+            if arg-1 is "신속한 잠행":
+                set {사기인첸트} to "swift sneak"
+            if arg-1 is "가시":
+                set {사기인첸트} to "thorns"
+            if arg-1 is "내구성":
+                set {사기인첸트} to "unbreaking"
+            if {사기인첸트} is set:
+                if arg-2 is not set:
+                    if player is not holding a air:
+                        enchant player's tool with "%{사기인첸트}% 1" parsed as enchantment type
+                        send "&7인첸트: &f%arg-1% 1"
+                        delete {사기인첸트}
+                        stop
+                    else:
+                        send "&c손에 아이템을 들어주세요!"
+            if {사기인첸트} is set:
+                if arg-2 is set:
+                    if player is not holding a air:
+                        enchant player's tool with "%{사기인첸트}% %arg-2%" parsed as enchantment type
+                        send "&7인첸트: &f%arg-1% %arg-2%"
+                        delete {사기인첸트}
+                        stop
+                    else:
+                        send "&c손에 아이템을 들어주세요!"
+            if {사기인첸트} is not set:
+                send "&c인첸트를 입력해주세요!"
+                stop
+        else:
+            send "&c&l권한이 필요합니다!"
+
+on tab complete of "/specialenchant":
+    set tab completions for position 1 to "친수성" and "살충" and "폭발로부터 보호" and "집전" and "귀속 저주" and "소실 저주" and "물갈퀴" and "효휼" and "가벼운 착지" and "발화" and "화염으로부터 보호" and "화염" and "행운" and "차가운 걸음" and "찌르기" and "무한" and "밀치기" and "약탈" and "충성" and "바다의 행운" and "미끼" and "수선" and "다중 발사" and "관통" and "힘" and "발사체로부터 보호" and "보호" and "밀어내기" and "빠른 장전" and "호흡" and "급류" and "날카로움" and "섬세한 손길" and "강타" and "영혼 가속" and "휩쓸기" and "신속한 잠행" and "가시" and "내구성"
+
+on right click:
+    if name of player's tool contains "&b&l스피드 플라이":
+        if player has permission "Essentials.specialitem.speedfly":
+            play sound "entity.firework_rocket.blast" with volume 1 with pitch 1 to player
+            push player upwards at speed 1
+            push player forwards at speed 2
+            set {getdamage.%player%} to true
+        else:
+            message "&c&l권한이 필요합니다!"
+
+on damage:
+    if "%damage cause%" is "fall":
+        if {getdamage.%victim%} is true:
+            cancel event
+            delete {getdamage.%victim%}
+
+command /specialitem [<text>]:
+    permission: Essentials.specialitem
+    permission message: &c&l권한이 필요합니다!
+    trigger:
+        if arg-1 is "스피드 플라이":
+            give 1 mojang banner pattern named "&b&l스피드 플라이" with lore "&a&l우클릭&f&l으로 사용" to player
+            send "&b&l스피드 플라이&f의 권한 : &eEssentials.specialitem.speedfly"
+
+on tab complete of "/specialitem":
+    set tab completions for position 1 to "스피드 플라이"
+
+
+
+
+
+
+
+
+#help
+command /ehelp [<text>]:
+	aliases: essentials:ehelp
+	trigger:
+		if arg-1 is "speed" or "walkspeed" or "flyspeed":
+			send "&6사용법: &f/%arg-1% &7[속도/유형] [플레이어/속도] [플레이어]"
+			send "플레이어의 날기/걷기 속도를 변경합니다."
+			send "&c※주의※ /%arg-1%를 사용할시, 걷고 있을땐"
+			send "&c걷기 속도를 변경하며, 날고 있을땐 날기 속도를 변경합니다."
+			send "&e권한 : &fEssentials.speed"
+			stop
+		if arg-1 is "fly":
+			send "&6사용법: &f/fly &7[플레이어] [비활성화/활성화]"
+			send "플레이어의 날게 할수 있게 설정합니다."
+			send "&e권한 : &fEssentials.fly"
+			stop
+		if arg-1 is "afk":
+			send "&6사용법: &f/afk"
+			send "플레이어를 잠수 상태로 만듭니다."
+			stop
+		if arg-1 is "fix" or "repair":
+			send "&6사용법: &f/%arg-1% [손/전체]"
+			send "아이템을 수리합니다."
+			send "&e권한 : &fEssentials.repair"
+			stop
+		if arg-1 is "god":
+			send "&6사용법: &f/god [플레이어]"
+			send "플레이어를 신모드로 변경합니다."
+			send "신모드일때는 모든 데미지를 받지 않습니다. &c(/kill 제외)"
+			send "&e권한 : &fEssentials.god"
+			stop
+		if arg-1 is "broadcast":
+			send "&6사용법: &f/broadcast [공지내용]"
+			send "온라인인 플레이어에게 공지를 보냅니다."
+			send "&e권한 : &fEssentials.broadcast"
+			stop
+		if arg-1 is "whisper":
+			send "&6사용법: &f/whisper [플레이어] [메세지]"
+			send "플레이어에게 메세지를 보냅니다."
+			stop
+		if arg-1 is "gm":
+			send "&6사용법: &f/gm [게임모드] [플레이어]"
+			send "플레이어의 게임모드를 변경합니다."
+			send "&e권한 : &fEssentials.gm"
+			stop
+		if arg-1 is "spawn":
+			send "&6사용법: &f/spawn"
+			send "스폰으로 이동합니다."
+			send "&c※주의※ 스폰이 설정되어 있지 않을시 이동돼지 않습니다!"
+			stop
+		if arg-1 is "setspawn":
+			send "&6사용법: &f/setspawn"
+			send "스폰을 설정합니다."
+			send "&c※주의※ 이전 스폰 위치는 사라집니다."
+			send "&e권한 : &fEssentials.setspawn"
+			stop
+		if arg-1 is "back":
+			send "&6사용법: &f/back"
+			send "마지막 죽은 위치, /spawn, /home 을 사용할때 본인의 위치가 저장됍니다!"
+			send "&e권한 : &fEssentials.back"
+			stop
+		if arg-1 is "home":
+			send "&6사용법: &f/home [집]"
+			send "집으로 이동합니다."
+			send "&c※주의※ 집이 설정되어 있지 않을시 이동돼지 않습니다!"
+			stop
+		if arg-1 is "sethome":
+			send "&6사용법: &f/sethome [집]"
+			send "집을 설정합니다."
+			stop
+		if arg-1 is "homes":
+			send "&6사용법: &f/homes"
+			send "집 목록을 확인합니다."
+			stop
+		if arg-1 is "delhome":
+			send "&6사용법: &f/delhome [집]"
+			send "집을 삭제합니다."
+			stop
+		if arg-1 is "heal" or "feed":
+			send "&6사용법: &f/%arg-1% [플레이어]"
+			send "체력/허기를 채웁니다."
+			send "&e권한 : &fEssentials.heal"
+			stop
+		if arg-1 is "openinv":
+			send "&6사용법: &f/openinv [플레이어]"
+			send "플레이어의 인벤토리를 엽니다."
+			send "&e권한 : &fEssentials.open"
+			stop
+		if arg-1 is "openender" or "ender":
+			send "&6사용법: &f/%arg-1% [플레이어]"
+			send "플레이어의 엔더 상자를 엽니다."
+			send "&e권한 : &fEssentials.open"
+			stop
+		if arg-1 is "ehelp":
+			send "&6사용법: &f/help [명령어]"
+			send "에센셜 스크립트의 명령어의 설명을 알려줍니다."
+			stop
+		if arg-1 is "playtime":
+			send "&6사용법: &f/playtime [플레이어]"
+			send "플레이어의 플레이 시간을 알려줍니다."
+			stop
+		if arg-1 is "head" or "skull":
+			send "&6사용법: &f/%arg-1% [플레이어]"
+			send "플레이어의 머리를 얻습니다."
+			send "&e권한 : Essentials.head"
+			stop
+		if arg-1 is "tpa":
+			send "&6사용법: &f/tpa [플레이어]"
+			send "티피 신청을 합니다"
+			stop
+		if arg-1 is "tpaccpet" or "tpyes":
+			send "&6사용법: &f/%arg-1% [플레이어]"
+			send "티피 신청을 합니다"
+			stop
+		if arg-1 is "tpdeny" or "tpno":
+			send "&6사용법: &f/%arg-1% [플레이어]"
+			send "티피 신청을 합니다"
+			stop
+		if arg-1 is "givepermission":
+			send "&6사용법: &f/givepermission [플레이어] [켜기/끄기/목록] [권한]"
+			send "OP가 없는 플레이어에게 명령어 사용 권한을 줍니다!"
+			send "&7(명령어 사용 권한을 주고 싶을때는 /ehelp [명령어]를 입력하면 권한이 있습니다!)"
+			send "&e권한 : &fEssentials.givepermission"
+			stop
+		if arg-1 is "specialenchant":
+			send "&6사용법: &f/specialenchant [인첸트] [레벨]"
+			send "도구에 인첸트 레벨을 최대 25565까지 부여할 수 있습니다!"
+			send "&e권한 : &fEssentials.specialench"
+			stop
+		if arg-1 is "specialitem":
+			send "&6사용법: &f/specialitem [아이템]"
+			send "스페셜 아이템을 획득할 수 있습니다!"
+			send "(&7각 아이템에도 권한이 포함되어 있습니다!)"
+			send "&e권한 : &fEssentials.specialench"
+			stop
+
+
+
+		else:
+			send "&6사용법: &f/ehelp [명령어]"
+			stop
+
+on tab complete of "/ehelp" and "/essentials:ehelp":
+	set tab completions for position 1 to "speed" and "walkspeed" and "flyspeed" and "fly" and "afk" and "god" and "broadcast" and "whisper" and "gm" and "setspawn" and "spawn" and "heal" and "feed" and "openinv" and "openender" and "ender" and "ehelp" and "playtime" and "head" and "skull" and "tpa" and "tpaccept" and "tpyes" and "tpno" and "tpdeny" and "givepermission" and "specicalenchant" and "specialitem"
