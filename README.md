@@ -2,10 +2,10 @@
 
 ## 주의
 * 재수정과 2차 배포는 삼가해주세요!
-
+* 스크립트 애드온을 꼭 다운로드 해주세요!
 ## 스크립트 애드온
 ```
-SkBee, SkQuery
+[SkBee](https://github.com/ShaneBeee/SkBee/releases), SkQuery
 ```
 
 ## 사용법
