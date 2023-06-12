@@ -5,7 +5,7 @@
 * 스크립트 애드온을 꼭 다운로드 해주세요!
 ## 스크립트 애드온
 ```
-[SkBee](https://github.com/ShaneBeee/SkBee/releases), SkQuery
+SkBee, SkQuery
 ```
 
 ## 사용법
