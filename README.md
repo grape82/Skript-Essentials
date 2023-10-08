@@ -3,6 +3,7 @@
 # 커스텀 에센셜
 [![Downloads](https://img.shields.io/github/downloads/grape82/Skript-Essentials/total?label=Downloads)](https://github.com/grape82/Skript-Essentials/releases)
 [![Forks](https://img.shields.io/github/forks/grape82/Skript-Essentials?label=forks)](https://github.com/grape82/Skript-Essentials/releases/forks)
+[![Watchers](https://img.shields.io/github/watchers/PlazmaMC/Plazma?label=watchers)](https://github.com/grape82/Skript-Essentials/watchers)
 
 </div>
 
